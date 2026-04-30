@@ -164,3 +164,24 @@
   width: 100%;
   transition: all 0.2s;
 }
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+
+.logout-btn:hover {
+  background: rgba(244, 63, 94, 0.08);
+  border-color: rgba(244, 63, 94, 0.2);
+  color: #fb7185;
+}

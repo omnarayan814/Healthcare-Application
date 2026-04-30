@@ -1,3 +1,4 @@
+import './styles/AuthLayout.css';
 import { motion } from 'framer-motion';
 import { Activity, Stethoscope, Brain } from 'lucide-react';
 
@@ -8,7 +9,7 @@ const FEATURES = [
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--bg-primary)', overflow: 'hidden' }}>
+    <div className="auth-layout-root">
 
       {/* ── LEFT HERO PANEL — always dark ── */}
       <aside className="auth-hero login-left">

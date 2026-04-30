@@ -40,7 +40,25 @@
 .settings-section-body {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.settings-row-text {
+  min-width: 0;
+  flex: 1;
 }
 
 .settings-row-label {

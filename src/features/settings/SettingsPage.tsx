@@ -1,10 +1,8 @@
 import './styles/SettingsPage.css';
-import { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, User, Monitor, Sun, Moon, Check, ChevronDown } from 'lucide-react';
+import { Bell, User } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { setTheme, setNotificationsEnabled, type Theme } from '@/store/slices/uiSlice';
+import { setNotificationsEnabled } from '@/store/slices/uiSlice';
 
 /* ── Section card ─────────────────────────────────────────────────── */
 
@@ -44,7 +42,7 @@ function SectionCard({
 function Row({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div className="settings-row">
-      <div style={{ minWidth: 0 }}>
+      <div className="settings-row-text">
         <div className="settings-row-label">{label}</div>
         {hint && <div className="settings-row-hint">{hint}</div>}
       </div>
@@ -84,148 +82,11 @@ function StaticValue({ value }: { value: string }) {
   );
 }
 
-/* ── Custom Select (used for Theme) ───────────────────────────────── */
-
-interface SelectOption<T extends string> {
-  value: T;
-  label: string;
-  icon: React.ReactNode;
-}
-
-function Select<T extends string>({
-  value, onChange, options,
-}: {
-  value: T; onChange: (v: T) => void; options: SelectOption<T>[];
-}) {
-  const [open, setOpen] = useState(false);
-  const [coords, setCoords] = useState<{ top: number; left: number; width: number } | null>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const popoverRef = useRef<HTMLUListElement>(null);
-  const current = options.find(o => o.value === value);
-
-  // Position the popover beneath the trigger using viewport coordinates
-  useLayoutEffect(() => {
-    if (!open || !triggerRef.current) return;
-    const place = () => {
-      const r = triggerRef.current!.getBoundingClientRect();
-      setCoords({ top: r.bottom + 6, left: r.left, width: r.width });
-    };
-    place();
-    window.addEventListener('resize', place);
-    window.addEventListener('scroll', place, true);
-    return () => {
-      window.removeEventListener('resize', place);
-      window.removeEventListener('scroll', place, true);
-    };
-  }, [open]);
-
-  // Click outside / escape to close
-  useEffect(() => {
-    if (!open) return;
-    function onDocClick(e: MouseEvent) {
-      const t = e.target as Node;
-      if (
-        triggerRef.current && !triggerRef.current.contains(t) &&
-        popoverRef.current && !popoverRef.current.contains(t)
-      ) setOpen(false);
-    }
-    function onEsc(e: KeyboardEvent) { if (e.key === 'Escape') setOpen(false); }
-    document.addEventListener('mousedown', onDocClick);
-    document.addEventListener('keydown', onEsc);
-    return () => {
-      document.removeEventListener('mousedown', onDocClick);
-      document.removeEventListener('keydown', onEsc);
-    };
-  }, [open]);
-
-  return (
-    <div style={{ position: 'relative', width: 200 }}>
-      <button
-        ref={triggerRef}
-        type="button"
-        onClick={() => setOpen(o => !o)}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        style={{
-          width: '100%', height: 38, padding: '0 12px',
-          display: 'flex', alignItems: 'center', gap: 10,
-          background: 'var(--bg-card)',
-          border: `1px solid ${open ? 'var(--accent-primary)' : 'var(--border-subtle)'}`,
-          borderRadius: 10, cursor: 'pointer',
-          color: 'var(--text-primary)', fontSize: 13, fontWeight: 500,
-          transition: 'border-color 0.15s, background 0.15s',
-        }}
-      >
-        {current?.icon}
-        <span style={{ flex: 1, textAlign: 'left' }}>{current?.label}</span>
-        <motion.span animate={{ rotate: open ? 180 : 0 }} style={{ display: 'flex', color: 'var(--text-muted)' }}>
-          <ChevronDown size={14} />
-        </motion.span>
-      </button>
-
-      {/* Portal — escapes any overflow:hidden ancestor (e.g. .glass-card) */}
-      {createPortal(
-        <AnimatePresence>
-          {open && coords && (
-            <motion.ul
-              ref={popoverRef}
-              role="listbox"
-              initial={{ opacity: 0, y: -4, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -4, scale: 0.98 }}
-              transition={{ duration: 0.12 }}
-              style={{
-                position: 'fixed',
-                top: coords.top,
-                left: coords.left,
-                width: coords.width,
-                listStyle: 'none', padding: 4, margin: 0,
-                background: 'var(--bg-secondary)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 10,
-                boxShadow: 'var(--shadow-card)',
-                zIndex: 1000,
-              }}
-            >
-              {options.map(opt => {
-                const selected = opt.value === value;
-                return (
-                  <li key={opt.value} role="option" aria-selected={selected}>
-                    <button
-                      type="button"
-                      onClick={() => { onChange(opt.value); setOpen(false); }}
-                      style={{
-                        width: '100%', height: 34, padding: '0 10px',
-                        display: 'flex', alignItems: 'center', gap: 10,
-                        background: selected ? 'rgba(99,102,241,0.10)' : 'transparent',
-                        border: 'none', borderRadius: 7, cursor: 'pointer',
-                        color: selected ? 'var(--accent-secondary)' : 'var(--text-primary)',
-                        fontSize: 13, fontWeight: selected ? 600 : 500,
-                        transition: 'background 0.12s',
-                      }}
-                    >
-                      {opt.icon}
-                      <span style={{ flex: 1, textAlign: 'left' }}>{opt.label}</span>
-                      {selected && <Check size={13} color="var(--accent-primary)" />}
-                    </button>
-                  </li>
-                );
-              })}
-            </motion.ul>
-          )}
-        </AnimatePresence>,
-        document.body,
-      )}
-    </div>
-  );
-}
-
 /* ── Page ─────────────────────────────────────────────────────────── */
 
 export default function SettingsPage() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(s => s.auth.user);
-  const theme = useAppSelector(s => s.ui.theme);
   const notificationsEnabled = useAppSelector(s => s.ui.notificationsEnabled);
 
   return (
@@ -237,7 +98,6 @@ export default function SettingsPage() {
       >
         <Row label="Display Name"><StaticValue value={user?.displayName ?? 'Admin User'} /></Row>
         <Row label="Email Address"><StaticValue value={user?.email ?? ''} /></Row>
-        <Row label="Role"><StaticValue value="Administrator" /></Row>
       </SectionCard>
 
       <SectionCard
@@ -257,21 +117,6 @@ export default function SettingsPage() {
         </Row>
       </SectionCard>
 
-      <SectionCard
-        icon={Monitor} label="Display" color="#10b981" delay={0.12}
-        description="Visual preferences applied across the entire app."
-      >
-        <Row label="Theme" hint="Choose between dark and light appearance.">
-          <Select<Theme>
-            value={theme}
-            onChange={t => dispatch(setTheme(t))}
-            options={[
-              { value: 'dark',  label: 'Dark',  icon: <Moon size={14} color="#818cf8" /> },
-              { value: 'light', label: 'Light', icon: <Sun size={14} color="#f59e0b" /> },
-            ]}
-          />
-        </Row>
-      </SectionCard>
 
     </div>
   );
