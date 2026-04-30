@@ -1,3 +1,4 @@
+import './styles/AnalyticsPage.css';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, Activity, Users, Heart } from 'lucide-react';
@@ -20,12 +21,8 @@ const ChartTooltip = ({
 }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{
-      background: 'rgba(10,10,24,0.96)', border: '1px solid rgba(99,102,241,0.18)',
-      borderRadius: 10, padding: '10px 14px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-      backdropFilter: 'blur(12px)', minWidth: 120,
-    }}>
-      {label && <p style={{ fontSize: 11, color: '#475569', marginBottom: 6 }}>{label}</p>}
+    <div className="analytics-chart-tooltip">
+      {label && <p className="analytics-chart-tooltip-label">{label}</p>}
       {payload.map((p, i) => (
         <p key={i} style={{ fontSize: 13, fontWeight: 600, color: p.color ?? '#818cf8' }}>
           {p.name ? <span style={{ fontWeight: 400, color: '#64748b' }}>{p.name}: </span> : null}{p.value}
@@ -65,9 +62,9 @@ function ChartCard({
       className="glass-card"
       style={{ padding: '24px 26px', ...style }}
     >
-      <div style={{ marginBottom: 20 }}>
-        <h3 style={{ fontSize: 14.5, fontWeight: 700, color: '#e2e8f0', letterSpacing: '-0.01em' }}>{title}</h3>
-        {subtitle && <p style={{ fontSize: 12, color: '#475569', marginTop: 3 }}>{subtitle}</p>}
+      <div className="chart-card-header">
+        <h3 className="chart-card-title">{title}</h3>
+        {subtitle && <p className="chart-card-subtitle">{subtitle}</p>}
       </div>
       {children}
     </motion.div>
@@ -93,7 +90,7 @@ export default function AnalyticsPage() {
   }, [dispatch]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div className="analytics-page">
 
       {/* ── Summary row ── */}
       <div className="grid-analytics-summary">
@@ -104,25 +101,17 @@ export default function AnalyticsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.07, duration: 0.35, ease: 'easeOut' }}
             whileHover={{ y: -3, transition: { duration: 0.18 } }}
-            style={{
-              padding: '18px 20px',
-              background: 'linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))',
-              border: '1px solid rgba(255,255,255,0.07)',
-              borderRadius: 14,
-              display: 'flex', alignItems: 'center', gap: 14,
-              cursor: 'default',
-            }}
+            className="analytics-summary-card"
           >
-            <div style={{
-              width: 42, height: 42, borderRadius: 11, flexShrink: 0,
-              background: `${color}13`, border: `1px solid ${color}22`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
+            <div
+              className="analytics-summary-icon"
+              style={{ background: `${color}13`, border: `1px solid ${color}22` }}
+            >
               <Icon size={19} color={color} />
             </div>
             <div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.02em', lineHeight: 1 }}>{value}</div>
-              <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>{label}</div>
+              <div className="analytics-summary-value">{value}</div>
+              <div className="analytics-summary-label">{label}</div>
             </div>
           </motion.div>
         ))}
@@ -199,14 +188,14 @@ export default function AnalyticsPage() {
               }} />
             </PieChart>
           </ResponsiveContainer>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginTop: 10 }}>
+          <div className="analytics-pie-legend">
             {DIAGNOSIS_PIE.map(({ name, value, color }) => (
-              <div key={name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: 2, background: color, flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: '#94a3b8' }}>{name}</span>
+              <div key={name} className="analytics-pie-legend-item">
+                <div className="analytics-pie-legend-left">
+                  <div className="analytics-pie-dot" style={{ background: color }} />
+                  <span className="analytics-pie-name">{name}</span>
                 </div>
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#e2e8f0' }}>{value}%</span>
+                <span className="analytics-pie-value">{value}%</span>
               </div>
             ))}
           </div>

@@ -1,3 +1,4 @@
+import './styles/DashboardPage.css';
 import { useEffect, useRef } from 'react';
 import { motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import {
@@ -29,10 +30,10 @@ function SectionHeader({ title, subtitle, action }: {
   action?: React.ReactNode;
 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20, gap: 12 }}>
+    <div className="section-header">
       <div>
-        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#e2e8f0', letterSpacing: '-0.01em' }}>{title}</h3>
-        {subtitle && <p style={{ fontSize: 12, color: '#475569', marginTop: 3 }}>{subtitle}</p>}
+        <h3 className="section-header-title">{title}</h3>
+        {subtitle && <p className="section-header-subtitle">{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -54,16 +55,7 @@ function KPICard({ metric, index }: { metric: KPIMetric; index: number }) {
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ delay: index * 0.08, duration: 0.4, ease: 'easeOut' }}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      style={{
-        padding: '22px',
-        background: 'linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        borderRadius: 16,
-        position: 'relative',
-        overflow: 'hidden',
-        cursor: 'default',
-        transition: 'border-color 0.3s, box-shadow 0.3s',
-      }}
+      className="dashboard-kpi-card"
       onMouseEnter={e => {
         const el = e.currentTarget;
         el.style.borderColor = `${metric.color}30`;
@@ -79,14 +71,11 @@ function KPICard({ metric, index }: { metric: KPIMetric; index: number }) {
       <motion.div
         animate={{ opacity: [0.06, 0.12, 0.06] }}
         transition={{ duration: 4, repeat: Infinity, delay: index * 0.8 }}
-        style={{
-          position: 'absolute', top: -30, right: -30,
-          width: 100, height: 100, borderRadius: '50%',
-          background: metric.color, filter: 'blur(24px)', pointerEvents: 'none',
-        }}
+        className="dashboard-kpi-glow"
+        style={{ background: metric.color }}
       />
 
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 18, position: 'relative' }}>
+      <div className="dashboard-kpi-header">
         <div style={{
           width: 40, height: 40, borderRadius: 10,
           background: `${metric.color}14`, border: `1px solid ${metric.color}25`,
@@ -108,14 +97,14 @@ function KPICard({ metric, index }: { metric: KPIMetric; index: number }) {
       </div>
 
       <div style={{ position: 'relative' }}>
-        <div style={{ fontSize: 30, fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.025em', lineHeight: 1, marginBottom: 5 }}>
+        <div className="dashboard-kpi-value">
           {numericValue !== null && inView ? <AnimatedNumber value={numericValue} /> : metric.value}
         </div>
-        <div style={{ fontSize: 12.5, color: '#64748b', fontWeight: 500 }}>{metric.label}</div>
+        <div className="dashboard-kpi-label">{metric.label}</div>
       </div>
 
       {/* Sparkline */}
-      <div style={{ height: 38, marginTop: 14, position: 'relative' }}>
+      <div className="dashboard-kpi-sparkline">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={metric.sparkData.map((v, i) => ({ v, i }))}>
             <defs>
@@ -137,13 +126,9 @@ function KPICard({ metric, index }: { metric: KPIMetric; index: number }) {
 const ChartTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{
-      background: 'rgba(10,10,24,0.96)', border: '1px solid rgba(99,102,241,0.2)',
-      borderRadius: 10, padding: '10px 14px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-      backdropFilter: 'blur(12px)',
-    }}>
-      <p style={{ fontSize: 11, color: '#475569', marginBottom: 4 }}>{label}</p>
-      <p style={{ fontSize: 15, fontWeight: 700, color: '#818cf8' }}>{payload[0].value} <span style={{ fontSize: 11, fontWeight: 400 }}>admissions</span></p>
+    <div className="chart-tooltip">
+      <p className="chart-tooltip-label">{label}</p>
+      <p className="chart-tooltip-value">{payload[0].value} <span className="chart-tooltip-unit">admissions</span></p>
     </div>
   );
 };
@@ -201,29 +186,23 @@ export default function DashboardPage() {
                               { greeting: 'Good night',     emoji: '🌙' };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div className="dashboard-page">
 
       {/* ── Welcome Banner ── */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: 'easeOut' }}
-        style={{
-          padding: '22px 28px',
-          background: 'linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(34,211,238,0.04) 100%)',
-          border: '1px solid rgba(99,102,241,0.14)',
-          borderRadius: 16,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14,
-        }}
+        className="dashboard-welcome-banner"
       >
         <div>
-          <h2 style={{ fontSize: 19, fontWeight: 700, color: '#f1f5f9', marginBottom: 4 }}>
+          <h2 className="dashboard-welcome-title">
             {greeting}, {user?.displayName ?? user?.email?.split('@')[0] ?? 'Doctor'} {emoji}
           </h2>
-          <p style={{ fontSize: 13, color: '#64748b' }}>
+          <p className="dashboard-welcome-subtitle">
             {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             {' · '}
-            <span style={{ color: '#f43f5e', fontWeight: 600 }}>{criticalCount} critical</span>
+            <span className="dashboard-critical-count">{criticalCount} critical</span>
             {' '}patient{criticalCount !== 1 ? 's' : ''} require attention
           </p>
         </div>
@@ -257,11 +236,7 @@ export default function DashboardPage() {
             title="Patient Admissions"
             subtitle="12-month overview · 2026"
             action={
-              <span style={{
-                padding: '4px 12px', borderRadius: 20,
-                background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.18)',
-                fontSize: 11, color: '#818cf8', fontWeight: 600,
-              }}>2026</span>
+              <span className="dashboard-year-badge">2026</span>
             }
           />
           <ResponsiveContainer width="100%" height={210}>
@@ -294,16 +269,12 @@ export default function DashboardPage() {
           <SectionHeader
             title="Critical Alerts"
             action={
-              <span style={{
-                padding: '3px 10px', borderRadius: 20,
-                background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.2)',
-                fontSize: 11, color: '#fb7185', fontWeight: 600,
-              }}>
+              <span className="dashboard-critical-badge">
                 {criticalPatients.length} active
               </span>
             }
           />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+          <div className="dashboard-critical-list">
             {criticalPatients.map((p, i) => (
               <motion.div
                 key={p.id}
@@ -312,30 +283,23 @@ export default function DashboardPage() {
                 transition={{ delay: 0.4 + i * 0.08 }}
                 whileHover={{ x: 3, transition: { duration: 0.15 } }}
                 onClick={() => navigate('/Patients')}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 11,
-                  padding: '11px 13px', borderRadius: 11,
-                  background: 'rgba(244,63,94,0.05)',
-                  border: '1px solid rgba(244,63,94,0.1)',
-                  cursor: 'pointer',
-                  position: 'relative', overflow: 'hidden',
-                }}
+                className="dashboard-critical-item"
               >
                 <motion.div
                   animate={{ opacity: [0.3, 0.8, 0.3] }}
                   transition={{ duration: 2.2, repeat: Infinity, delay: i * 0.6 }}
-                  style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 2, background: '#f43f5e', borderRadius: '2px 0 0 2px' }}
+                  className="dashboard-critical-indicator"
                 />
                 <div className="avatar" style={{ width: 34, height: 34, background: getInitialsBg(p.name), fontSize: 11 }}>
                   {p.avatar}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12.5, fontWeight: 600, color: '#f1f5f9', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
-                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.diagnosis}</div>
+                  <div className="dashboard-critical-name">{p.name}</div>
+                  <div className="dashboard-critical-diagnosis">{p.diagnosis}</div>
                 </div>
-                <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <div style={{ fontSize: 11, color: '#fb7185', fontWeight: 700 }}>O₂ {p.vitals.oxygenSat}%</div>
-                  <div style={{ fontSize: 10, color: '#475569', marginTop: 1 }}>{p.room}</div>
+                <div className="dashboard-critical-vitals">
+                  <div className="dashboard-critical-o2">O₂ {p.vitals.oxygenSat}%</div>
+                  <div className="dashboard-critical-room">{p.room}</div>
                 </div>
               </motion.div>
             ))}
@@ -407,9 +371,9 @@ export default function DashboardPage() {
                   <td style={{ fontSize: 12.5, color: '#94a3b8' }}>{p.doctor}</td>
                   <td style={{ fontSize: 12, whiteSpace: 'nowrap', color: '#64748b' }}>{formatDate(p.admittedOn)}</td>
                   <td>
-                    <div style={{ fontSize: 11.5, display: 'flex', gap: 8 }}>
-                      <span style={{ color: '#f43f5e' }}>♥ {p.vitals.heartRate}</span>
-                      <span style={{ color: '#22d3ee' }}>O₂ {p.vitals.oxygenSat}%</span>
+                    <div className="dashboard-vitals">
+                      <span className="dashboard-vital-heart">♥ {p.vitals.heartRate}</span>
+                      <span className="dashboard-vital-oxygen">O₂ {p.vitals.oxygenSat}%</span>
                     </div>
                   </td>
                 </motion.tr>

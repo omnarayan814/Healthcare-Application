@@ -1,3 +1,4 @@
+import './styles/AddPatientModal.css';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, UserPlus, AlertCircle, CheckCircle2, Loader2, Pencil } from 'lucide-react';
@@ -156,20 +157,11 @@ export default function AddPatientModal({ open, onClose, editingPatient }: Props
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            style={{
-              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
-              backdropFilter: 'blur(6px)', zIndex: 100,
-            }}
+            className="modal-backdrop"
           />
 
           {/* Modal — outer flex wrapper handles centering, inner motion handles animation */}
-          <div
-            style={{
-              position: 'fixed', inset: 0, zIndex: 101,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: 16, pointerEvents: 'none',
-            }}
-          >
+          <div className="modal-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -177,35 +169,19 @@ export default function AddPatientModal({ open, onClose, editingPatient }: Props
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             role="dialog"
             aria-modal="true"
-            style={{
-              width: '100%', maxWidth: 720, maxHeight: '90vh', overflowY: 'auto',
-              background: 'linear-gradient(160deg, #0e0e1c 0%, #0a0a14 100%)',
-              border: '1px solid rgba(99,102,241,0.18)', borderRadius: 18,
-              boxShadow: '0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(99,102,241,0.1)',
-              pointerEvents: 'auto',
-            }}
+            className="modal-container"
           >
             {/* Header */}
-            <div style={{
-              position: 'sticky', top: 0, zIndex: 2,
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '20px 26px', borderBottom: '1px solid rgba(255,255,255,0.06)',
-              background: 'linear-gradient(180deg, rgba(14,14,28,0.95), rgba(14,14,28,0.85))',
-              backdropFilter: 'blur(12px)',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{
-                  width: 38, height: 38, borderRadius: 10,
-                  background: 'linear-gradient(135deg, #6366f1, #818cf8)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
+            <div className="modal-header">
+              <div className="modal-header-left">
+                <div className="modal-header-icon">
                   {isEdit ? <Pencil size={17} color="white" /> : <UserPlus size={18} color="white" />}
                 </div>
                 <div>
-                  <h2 style={{ fontSize: 17, fontWeight: 700, color: '#f1f5f9', margin: 0 }}>
+                  <h2 className="modal-title">
                     {isEdit ? 'Edit Patient' : 'Add New Patient'}
                   </h2>
-                  <p style={{ fontSize: 11.5, color: '#64748b', margin: '2px 0 0' }}>
+                  <p className="modal-subtitle">
                     {isEdit ? `${editingPatient?.id} · changes save to Firestore` : 'Saved to Firestore · syncs in real-time'}
                   </p>
                 </div>
@@ -213,30 +189,21 @@ export default function AddPatientModal({ open, onClose, editingPatient }: Props
               <button
                 onClick={onClose}
                 aria-label="Close"
-                style={{
-                  width: 32, height: 32, borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)',
-                  background: 'rgba(255,255,255,0.03)', color: '#64748b', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}
+                className="modal-close-btn"
               >
                 <X size={15} />
               </button>
             </div>
 
             {/* Body */}
-            <form onSubmit={handleSubmit} noValidate style={{ padding: '22px 26px' }}>
+            <form onSubmit={handleSubmit} noValidate className="modal-body">
               <AnimatePresence>
                 {addError && (
                   <motion.div
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    style={{
-                      display: 'flex', alignItems: 'flex-start', gap: 10,
-                      padding: '11px 13px', borderRadius: 10, marginBottom: 16,
-                      background: 'rgba(244,63,94,0.08)', border: '1px solid rgba(244,63,94,0.22)',
-                      color: '#fb7185', fontSize: 12.5, lineHeight: 1.5,
-                    }}
+                    className="modal-error-alert"
                   >
                     <AlertCircle size={14} style={{ flexShrink: 0, marginTop: 2 }} />
                     <span>{addError}</span>
@@ -248,12 +215,7 @@ export default function AddPatientModal({ open, onClose, editingPatient }: Props
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 10,
-                      padding: '11px 13px', borderRadius: 10, marginBottom: 16,
-                      background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.22)',
-                      color: '#34d399', fontSize: 12.5,
-                    }}
+                    className="modal-success-alert"
                   >
                     <CheckCircle2 size={14} />
                     {isEdit ? 'Changes saved — closing…' : 'Patient added successfully — closing…'}
@@ -357,10 +319,7 @@ export default function AddPatientModal({ open, onClose, editingPatient }: Props
               </Row>
 
               {/* Footer */}
-              <div style={{
-                display: 'flex', gap: 10, justifyContent: 'flex-end',
-                paddingTop: 18, marginTop: 18, borderTop: '1px solid rgba(255,255,255,0.06)',
-              }}>
+              <div className="modal-footer">
                 <button type="button" onClick={onClose} className="btn-ghost"
                   style={{ height: 42, padding: '0 18px', fontSize: 13 }}>
                   Cancel
@@ -368,16 +327,16 @@ export default function AddPatientModal({ open, onClose, editingPatient }: Props
                 <button type="submit" disabled={adding || success} className="btn-primary"
                   style={{ height: 42, padding: '0 22px', fontSize: 13.5, minWidth: 150 }}>
                   {adding ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span className="modal-btn-content">
                       <Loader2 size={15} style={{ animation: 'spin 0.8s linear infinite' }} />
                       Saving…
                     </span>
                   ) : success ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span className="modal-btn-content">
                       <CheckCircle2 size={15} /> {isEdit ? 'Saved' : 'Added'}
                     </span>
                   ) : (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span className="modal-btn-content">
                       {isEdit ? <><Pencil size={14} /> Save Changes</> : <><UserPlus size={15} /> Add Patient</>}
                     </span>
                   )}
@@ -395,29 +354,19 @@ export default function AddPatientModal({ open, onClose, editingPatient }: Props
 /* ── tiny presentational helpers ─────────────────────────────────────── */
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{
-      fontSize: 10.5, fontWeight: 700, color: '#6366f1',
-      letterSpacing: '0.14em', textTransform: 'uppercase',
-      marginTop: 18, marginBottom: 10,
-    }}>
-      {children}
-    </div>
-  );
+  return <div className="modal-section-title">{children}</div>;
 }
 
 function Row({ children }: { children: React.ReactNode }) {
-  return <div style={{ display: 'flex', gap: 12, marginBottom: 12, flexWrap: 'wrap' }}>{children}</div>;
+  return <div className="modal-row">{children}</div>;
 }
 
 function Field({ label, error, flex = 1, children }: { label: string; error?: string; flex?: number; children: React.ReactNode }) {
   return (
     <div style={{ flex, minWidth: 140 }}>
-      <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#94a3b8', marginBottom: 6, letterSpacing: '0.02em' }}>
-        {label}
-      </label>
+      <label className="modal-field-label">{label}</label>
       {children}
-      {error && <div style={{ fontSize: 10.5, color: '#f43f5e', marginTop: 4 }}>{error}</div>}
+      {error && <div className="modal-field-error">{error}</div>}
     </div>
   );
 }

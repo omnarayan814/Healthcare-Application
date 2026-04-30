@@ -1,3 +1,4 @@
+import './styles/PatientsPage.css';
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -51,23 +52,18 @@ function PatientCard({
         type="button"
         aria-label={selected ? 'Deselect patient' : 'Select patient'}
         onClick={e => { e.stopPropagation(); onToggleSelect(); }}
-        className="patient-checkbox"
+        className="patient-card-checkbox"
         style={{
-          position: 'absolute', top: 10, left: 10, zIndex: 2,
-          width: 20, height: 20, borderRadius: 5,
           border: selected ? `2px solid var(--accent-primary)` : '1.5px solid var(--border-subtle)',
           background: selected ? 'var(--accent-primary)' : 'var(--bg-secondary)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer', padding: 0,
           opacity: selected || anySelected ? 1 : 0,
-          transition: 'opacity 0.18s, background 0.18s, border-color 0.18s',
         }}
       >
         {selected && <Check size={12} color="white" strokeWidth={3} />}
       </button>
 
       {/* Header — avatar, name, status */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+      <div className="patient-card-header">
         <div
           className="avatar"
           style={{
@@ -78,15 +74,10 @@ function PatientCard({
           {patient.avatar}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{
-            fontSize: 14, fontWeight: 600,
-            color: 'var(--text-primary)',
-            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            letterSpacing: '-0.01em',
-          }}>
+          <div className="patient-card-name">
             {patient.name}
           </div>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+          <div className="patient-card-meta">
             {patient.id} · {patient.age}y · {patient.gender}
           </div>
         </div>
@@ -108,35 +99,16 @@ function PatientCard({
       </div>
 
       {/* Diagnosis — primary clinical info */}
-      <div style={{
-        fontSize: 13, fontWeight: 500, color: 'var(--text-primary)',
-        marginBottom: 10, lineHeight: 1.4,
-        overflow: 'hidden', textOverflow: 'ellipsis',
-        display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' as const,
-      }}>
+      <div className="patient-card-diagnosis">
         {patient.diagnosis}
       </div>
 
       {/* Footer — department · room  +  blood group */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
-        paddingTop: 10,
-        borderTop: '1px solid var(--border-subtle)',
-      }}>
-        <div style={{
-          fontSize: 11.5, color: 'var(--text-secondary)',
-          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          flex: 1, minWidth: 0,
-        }}>
+      <div className="patient-card-footer">
+        <div className="patient-card-dept">
           {patient.department} · {patient.room}
         </div>
-        <span style={{
-          fontSize: 10.5, fontWeight: 700, letterSpacing: '0.02em',
-          padding: '2px 8px', borderRadius: 6,
-          background: 'var(--bg-card-hover)',
-          color: 'var(--text-secondary)',
-          flexShrink: 0,
-        }}>
+        <span className="patient-card-blood">
           {patient.bloodGroup}
         </span>
       </div>
@@ -168,12 +140,10 @@ function PatientListRow({
           type="button"
           aria-label={selected ? 'Deselect' : 'Select'}
           onClick={onToggleSelect}
+          className="patient-list-checkbox"
           style={{
-            width: 20, height: 20, borderRadius: 5,
             border: selected ? '2px solid #818cf8' : '1.5px solid rgba(255,255,255,0.18)',
             background: selected ? '#6366f1' : 'transparent',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', padding: 0,
           }}
         >
           {selected && <Check size={12} color="white" strokeWidth={3} />}
@@ -224,10 +194,7 @@ function PatientDetailModal({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(6px)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 24,
-      }}
+      className="patient-detail-overlay"
     >
       <motion.div
         initial={{ scale: 0.94, y: 24 }}
@@ -235,89 +202,47 @@ function PatientDetailModal({
         exit={{ scale: 0.94, y: 24 }}
         transition={{ type: 'spring' as const, stiffness: 320, damping: 28 }}
         onClick={e => e.stopPropagation()}
-        style={{
-          background: '#0d0d1a', border: '1px solid rgba(99,102,241,0.2)',
-          borderRadius: 20, width: '100%', maxWidth: 560, maxHeight: '88vh',
-          overflow: 'auto', boxShadow: '0 24px 64px rgba(0,0,0,0.7), 0 0 80px rgba(99,102,241,0.08)',
-        }}
+        className="patient-detail-modal"
       >
         {/* Header */}
-        <div style={{
-          padding: '24px 26px 20px',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-          display: 'flex', alignItems: 'center', gap: 14,
-          background: 'linear-gradient(135deg, rgba(99,102,241,0.07) 0%, transparent 100%)',
-        }}>
-          <div style={{
-            position: 'relative',
-            width: 52, height: 52, flexShrink: 0,
-          }}>
+        <div className="patient-detail-header">
+          <div className="patient-detail-avatar-wrap">
             <div className="avatar" style={{ background: getInitialsBg(patient.name), width: 52, height: 52, fontSize: 16 }}>
               {patient.avatar}
             </div>
-            <div style={{
-              position: 'absolute', bottom: 0, right: 0,
-              width: 14, height: 14, borderRadius: '50%',
-              background: statusColor, border: '2px solid #0d0d1a',
-            }} />
+            <div className="patient-detail-status-dot" style={{ background: statusColor }} />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#f1f5f9', marginBottom: 4 }}>{patient.name}</div>
-            <div style={{ fontSize: 12, color: '#64748b' }}>{patient.id} · {patient.age}y · {patient.gender} · {patient.bloodGroup}</div>
+            <div className="patient-detail-name">{patient.name}</div>
+            <div className="patient-detail-meta">{patient.id} · {patient.age}y · {patient.gender} · {patient.bloodGroup}</div>
           </div>
           <span className={`badge badge-${patient.status}`} style={{ fontSize: 12 }}>
             <span className="status-dot" style={{ background: statusColor }} />
             {patient.status}
           </span>
           <div style={{ display: 'flex', gap: 6 }}>
-            <button
-              onClick={onEdit}
-              aria-label="Edit patient"
-              title="Edit patient"
-              style={{
-                background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.25)',
-                borderRadius: 8, color: '#818cf8', cursor: 'pointer', padding: '6px 8px',
-                display: 'flex', alignItems: 'center',
-              }}
-            >
+            <button onClick={onEdit} aria-label="Edit patient" title="Edit patient" className="patient-edit-btn">
               <Pencil size={14} />
             </button>
-            <button
-              onClick={onDelete}
-              aria-label="Delete patient"
-              title="Delete patient"
-              style={{
-                background: 'rgba(244,63,94,0.08)', border: '1px solid rgba(244,63,94,0.22)',
-                borderRadius: 8, color: '#fb7185', cursor: 'pointer', padding: '6px 8px',
-                display: 'flex', alignItems: 'center',
-              }}
-            >
+            <button onClick={onDelete} aria-label="Delete patient" title="Delete patient" className="patient-delete-btn">
               <Trash2 size={14} />
             </button>
-            <button
-              onClick={onClose}
-              aria-label="Close"
-              style={{
-                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: 8, color: '#64748b', cursor: 'pointer', padding: '6px 8px',
-                display: 'flex', alignItems: 'center',
-              }}
-            >
+            <button onClick={onClose} aria-label="Close" className="patient-close-btn">
               <X size={15} />
             </button>
           </div>
         </div>
 
-        <div style={{ padding: '22px 26px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div className="patient-detail-body">
           {/* Diagnosis */}
-          <div style={{ padding: '14px 16px', borderRadius: 12, background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.12)' }}>
-            <div style={{ fontSize: 10, fontWeight: 600, color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Primary Diagnosis</div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: '#f1f5f9' }}>{patient.diagnosis}</div>
+          <div className="patient-diagnosis-block">
+            <div className="patient-diagnosis-label">Primary Diagnosis</div>
+            <div className="patient-diagnosis-value">{patient.diagnosis}</div>
           </div>
 
           {/* Vitals grid */}
           <div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Vitals</div>
+            <div className="patient-vitals-label">Vitals</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
               {[
                 { icon: Heart,       label: 'Heart Rate',    value: `${patient.vitals.heartRate}`,    unit: 'bpm',  color: '#f43f5e' },
@@ -325,14 +250,11 @@ function PatientDetailModal({
                 { icon: Thermometer, label: 'Temperature',   value: `${patient.vitals.temperature}`,  unit: '°C',   color: '#f59e0b' },
                 { icon: Droplets,    label: 'Blood Pressure',value: patient.vitals.bloodPressure,     unit: 'mmHg', color: '#6366f1' },
               ].map(({ icon: Icon, label, value, unit, color }) => (
-                <div key={label} style={{
-                  padding: '14px 10px', borderRadius: 12, textAlign: 'center',
-                  background: `${color}0A`, border: `1px solid ${color}22`,
-                }}>
+                <div key={label} className="patient-vital-cell" style={{ background: `${color}0A`, border: `1px solid ${color}22` }}>
                   <Icon size={16} color={color} style={{ marginBottom: 8 }} />
-                  <div style={{ fontSize: 17, fontWeight: 800, color: '#f1f5f9', lineHeight: 1 }}>{value}</div>
-                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 3 }}>{unit}</div>
-                  <div style={{ fontSize: 9, color: '#334155', marginTop: 4, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
+                  <div className="patient-vital-value">{value}</div>
+                  <div className="patient-vital-unit">{unit}</div>
+                  <div className="patient-vital-name">{label}</div>
                 </div>
               ))}
             </div>
@@ -340,7 +262,7 @@ function PatientDetailModal({
 
           {/* Patient info */}
           <div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Patient Information</div>
+            <div className="patient-info-label">Patient Information</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 9 }}>
               {[
                 { icon: Building,  label: 'Department',      value: patient.department },
@@ -350,12 +272,12 @@ function PatientDetailModal({
                 { icon: Phone,     label: 'Phone',           value: patient.phone },
                 { icon: Mail,      label: 'Email',           value: patient.email },
               ].map(({ icon: Icon, label, value }) => (
-                <div key={label} style={{ padding: '10px 12px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                <div key={label} className="patient-info-cell">
+                  <div className="patient-info-cell-header">
                     <Icon size={11} color="#475569" />
-                    <span style={{ fontSize: 10, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>{label}</span>
+                    <span className="patient-info-cell-label">{label}</span>
                   </div>
-                  <div style={{ fontSize: 12.5, color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value}</div>
+                  <div className="patient-info-cell-value">{value}</div>
                 </div>
               ))}
             </div>
@@ -416,7 +338,7 @@ export default function PatientsPage() {
   const hasActiveFilters = filters.status !== 'all' || filters.department !== 'all';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div className="patients-page">
 
       {/* Toolbar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
@@ -499,12 +421,7 @@ export default function PatientsPage() {
               </button>
               <button
                 onClick={() => setConfirmDeleteIds(selectedIds)}
-                style={{
-                  height: 30, padding: '0 12px', fontSize: 11.5,
-                  background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.3)',
-                  color: '#fb7185', borderRadius: 8, cursor: 'pointer',
-                  display: 'inline-flex', alignItems: 'center', gap: 5,
-                }}
+                className="patients-delete-selection-btn"
               >
                 <Trash2 size={12} />
                 Delete {selectedIds.length}
@@ -557,7 +474,7 @@ export default function PatientsPage() {
               </AnimatePresence>
 
               <div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 9 }}>Status</div>
+                <div className="patients-filter-label">Status</div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                   {STATUS_OPTIONS.map(s => {
                     const active = filters.status === s;
@@ -565,13 +482,7 @@ export default function PatientsPage() {
                       <button
                         key={s}
                         onClick={() => dispatch(setStatusFilter(active ? 'all' : s))}
-                        style={{
-                          padding: '5px 13px', borderRadius: 20, fontSize: 12, fontWeight: 500, cursor: 'pointer',
-                          background: active ? 'rgba(99,102,241,0.18)' : 'rgba(255,255,255,0.03)',
-                          border: `1px solid ${active ? 'rgba(99,102,241,0.4)' : 'rgba(255,255,255,0.06)'}`,
-                          color: active ? '#818cf8' : '#64748b',
-                          transition: 'all 0.15s',
-                        }}
+                        className={`filter-status-btn${active ? ' active' : ''}`}
                       >
                         {s.charAt(0).toUpperCase() + s.slice(1)}
                       </button>
@@ -580,7 +491,7 @@ export default function PatientsPage() {
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 9 }}>Department</div>
+                <div className="patients-filter-label">Department</div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                   {DEPT_OPTIONS.map(d => {
                     const active = filters.department === d;
@@ -588,13 +499,7 @@ export default function PatientsPage() {
                       <button
                         key={d}
                         onClick={() => dispatch(setDepartmentFilter(active ? 'all' : d))}
-                        style={{
-                          padding: '5px 13px', borderRadius: 20, fontSize: 12, fontWeight: 500, cursor: 'pointer',
-                          background: active ? 'rgba(34,211,238,0.12)' : 'rgba(255,255,255,0.03)',
-                          border: `1px solid ${active ? 'rgba(34,211,238,0.3)' : 'rgba(255,255,255,0.06)'}`,
-                          color: active ? '#22d3ee' : '#64748b',
-                          transition: 'all 0.15s',
-                        }}
+                        className={`filter-dept-btn${active ? ' active' : ''}`}
                       >
                         {d}
                       </button>
@@ -713,11 +618,11 @@ export default function PatientsPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          style={{ textAlign: 'center', padding: '64px 0', color: '#475569' }}
+          className="patients-empty-state"
         >
           <Search size={36} style={{ marginBottom: 14, opacity: 0.25 }} />
-          <p style={{ fontSize: 15, fontWeight: 600, color: '#64748b', marginBottom: 4 }}>No patients found</p>
-          <p style={{ fontSize: 13 }}>Try adjusting your search or filters</p>
+          <p className="patients-empty-title">No patients found</p>
+          <p className="patients-empty-hint">Try adjusting your search or filters</p>
         </motion.div>
       )}
 
@@ -773,10 +678,7 @@ function ConfirmDeleteDialog({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onCancel}
-          style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100, padding: 24,
-          }}
+          className="confirm-delete-overlay"
         >
           <motion.div
             initial={{ scale: 0.94, y: 16 }}
@@ -785,43 +687,27 @@ function ConfirmDeleteDialog({
             transition={{ duration: 0.2 }}
             onClick={e => e.stopPropagation()}
             role="alertdialog"
-            style={{
-              background: '#0d0d1a', border: '1px solid rgba(244,63,94,0.25)',
-              borderRadius: 16, padding: '24px 26px', maxWidth: 420, width: '100%',
-              boxShadow: '0 24px 64px rgba(0,0,0,0.7)',
-            }}
+            className="confirm-delete-modal"
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-              <div style={{
-                width: 38, height: 38, borderRadius: 10,
-                background: 'rgba(244,63,94,0.12)', border: '1px solid rgba(244,63,94,0.3)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
+            <div className="confirm-delete-header">
+              <div className="confirm-delete-icon">
                 <Trash2 size={17} color="#fb7185" />
               </div>
               <div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: '#f1f5f9', margin: 0 }}>
+                <h3 className="confirm-delete-title">
                   Delete {ids.length === 1 ? 'patient' : `${ids.length} patients`}?
                 </h3>
-                <p style={{ fontSize: 12, color: '#64748b', margin: '3px 0 0' }}>
+                <p className="confirm-delete-subtitle">
                   This action cannot be undone.
                 </p>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 18 }}>
+            <div className="confirm-delete-actions">
               <button onClick={onCancel} className="btn-ghost"
                 style={{ height: 38, padding: '0 16px', fontSize: 12.5 }}>
                 Cancel
               </button>
-              <button
-                onClick={onConfirm}
-                style={{
-                  height: 38, padding: '0 18px', fontSize: 12.5, fontWeight: 600,
-                  background: 'linear-gradient(135deg, #f43f5e, #e11d48)', color: 'white',
-                  border: 'none', borderRadius: 8, cursor: 'pointer',
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                }}
-              >
+              <button onClick={onConfirm} className="confirm-delete-btn">
                 <Trash2 size={13} /> Delete
               </button>
             </div>

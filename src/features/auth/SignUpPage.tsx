@@ -5,6 +5,8 @@ import { Mail, Lock, Eye, EyeOff, Activity, ArrowRight, AlertCircle, User as Use
 import { useAppDispatch, useAppSelector } from '@/store';
 import { signupThunk, googleLoginThunk, clearError } from '@/store/slices/authSlice';
 import AuthLayout from './AuthLayout';
+import './styles/LoginPage.css';
+import './styles/SignUpPage.css';
 
 function GoogleIcon() {
   return (
@@ -37,25 +39,22 @@ function PasswordStrength({ password }: { password: string }) {
       animate={{ opacity: 1, y: 0 }}
       style={{ marginTop: 8 }}
     >
-      <div style={{ display: 'flex', gap: 4, marginBottom: 6 }}>
+      <div className="pw-strength-bars">
         {[0, 1, 2].map(i => (
           <div
             key={i}
-            style={{
-              flex: 1, height: 3, borderRadius: 2,
-              background: i < strength ? colors[strength - 1] : 'rgba(255,255,255,0.08)',
-              transition: 'background 0.3s',
-            }}
+            className="pw-strength-bar"
+            style={{ background: i < strength ? colors[strength - 1] : 'rgba(255,255,255,0.08)' }}
           />
         ))}
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="pw-strength-footer">
         <span style={{ fontSize: 11, color: strength > 0 ? colors[strength - 1] : '#475569', fontWeight: 600 }}>
           {strength > 0 ? labels[strength - 1] : ''}
         </span>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div className="pw-strength-checks">
           {checks.map(c => (
-            <span key={c.label} style={{ fontSize: 10, color: c.pass ? '#10b981' : '#334155', display: 'flex', alignItems: 'center', gap: 3 }}>
+            <span key={c.label} className="pw-strength-check" style={{ color: c.pass ? '#10b981' : '#334155' }}>
               <CheckCircle size={10} color={c.pass ? '#10b981' : '#334155'} />
               {c.label}
             </span>
@@ -125,11 +124,11 @@ export default function SignUpPage() {
 
   if (initializing) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)' }}>
+      <div className="auth-loading-screen">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 0.9, ease: 'linear' }}
-          style={{ width: 36, height: 36, border: '3px solid rgba(99,102,241,0.2)', borderTopColor: '#6366f1', borderRadius: '50%' }}
+          className="auth-spinner"
         />
       </div>
     );
@@ -138,7 +137,7 @@ export default function SignUpPage() {
   return (
     <AuthLayout>
       <div
-        style={{ width: '100%', maxWidth: 520, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 32px', position: 'relative', overflow: 'hidden' }}
+        className="auth-form-panel"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
@@ -146,12 +145,12 @@ export default function SignUpPage() {
         <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.04, 0.08, 0.04] }}
           transition={{ duration: 6, repeat: Infinity }}
-          style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', background: '#6366f1', top: '10%', right: '-10%', filter: 'blur(80px)', pointerEvents: 'none' }}
+          className="auth-orb-1"
         />
         <motion.div
           animate={{ scale: [1, 1.15, 1], opacity: [0.03, 0.06, 0.03] }}
           transition={{ duration: 8, repeat: Infinity, delay: 3 }}
-          style={{ position: 'absolute', width: 300, height: 300, borderRadius: '50%', background: '#22d3ee', bottom: '5%', left: '-5%', filter: 'blur(70px)', pointerEvents: 'none' }}
+          className="auth-orb-2"
         />
 
         <motion.div
@@ -159,31 +158,31 @@ export default function SignUpPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
-          style={{ width: '100%', maxWidth: 420, position: 'relative', zIndex: 1, perspective: 1000 }}
+          className="auth-form-wrapper"
         >
           <motion.div style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}>
 
             {/* Logo */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 36 }}>
+            <div className="auth-logo signup-logo">
               <motion.div
                 animate={{ boxShadow: ['0 0 16px rgba(99,102,241,0.3)', '0 0 32px rgba(99,102,241,0.55)', '0 0 16px rgba(99,102,241,0.3)'] }}
                 transition={{ duration: 2.5, repeat: Infinity }}
-                style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #6366f1, #818cf8)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                className="auth-logo-mark"
               >
                 <Activity size={20} color="white" />
               </motion.div>
               <div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: '#f1f5f9' }}>MediCore</div>
-                <div style={{ fontSize: 10, color: '#6366f1', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Healthcare Platform</div>
+                <div className="auth-logo-name">MediCore</div>
+                <div className="auth-logo-tag">Healthcare Platform</div>
               </div>
             </div>
 
             {/* Heading */}
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={{ marginBottom: 28 }}>
-              <h2 style={{ fontSize: 28, fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.02em', marginBottom: 8 }}>
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="auth-heading signup-heading">
+              <h2 className="auth-title">
                 Create account
               </h2>
-              <p style={{ fontSize: 14, color: '#64748b' }}>Join the MediCore clinical platform</p>
+              <p className="auth-subtitle">Join the MediCore clinical platform</p>
             </motion.div>
 
             {/* Google sign-up */}
@@ -205,26 +204,21 @@ export default function SignUpPage() {
             </motion.button>
 
             {/* "or" Divider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-              <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.06)' }} />
-              <span style={{ fontSize: 11, color: '#475569', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase' }}>or</span>
-              <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.06)' }} />
+            <div className="auth-divider signup-divider">
+              <div className="auth-divider-line" />
+              <span className="auth-divider-text">or</span>
+              <div className="auth-divider-line" />
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <form onSubmit={handleSubmit} className="auth-form signup-form">
               <AnimatePresence>
                 {error && (
                   <motion.div
                     initial={{ opacity: 0, y: -10, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.97 }}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 10,
-                      padding: '12px 14px', borderRadius: 12,
-                      background: 'rgba(244,63,94,0.08)', border: '1px solid rgba(244,63,94,0.22)',
-                      color: '#fb7185', fontSize: 13,
-                    }}
+                    className="auth-error-alert"
                   >
                     <AlertCircle size={15} />
                     {error}
@@ -234,12 +228,12 @@ export default function SignUpPage() {
 
               {/* Full Name */}
               <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.28 }}>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94a3b8', marginBottom: 7, letterSpacing: '0.02em' }}>
+                <label className="auth-label">
                   Full Name
                 </label>
                 <div style={{ position: 'relative' }}>
                   <motion.div animate={{ color: focused === 'name' ? '#6366f1' : '#475569' }}
-                    style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+                    className="auth-input-icon">
                     <UserIcon size={15} />
                   </motion.div>
                   <input
@@ -256,19 +250,19 @@ export default function SignUpPage() {
                 <AnimatePresence>
                   {validationErrors.name && (
                     <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                      style={{ fontSize: 11.5, color: '#f43f5e', marginTop: 5 }}>{validationErrors.name}</motion.p>
+                      className="auth-field-error">{validationErrors.name}</motion.p>
                   )}
                 </AnimatePresence>
               </motion.div>
 
               {/* Email */}
               <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.34 }}>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94a3b8', marginBottom: 7, letterSpacing: '0.02em' }}>
+                <label className="auth-label">
                   Email Address
                 </label>
                 <div style={{ position: 'relative' }}>
                   <motion.div animate={{ color: focused === 'email' ? '#6366f1' : '#475569' }}
-                    style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+                    className="auth-input-icon">
                     <Mail size={15} />
                   </motion.div>
                   <input
@@ -285,19 +279,19 @@ export default function SignUpPage() {
                 <AnimatePresence>
                   {validationErrors.email && (
                     <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                      style={{ fontSize: 11.5, color: '#f43f5e', marginTop: 5 }}>{validationErrors.email}</motion.p>
+                      className="auth-field-error">{validationErrors.email}</motion.p>
                   )}
                 </AnimatePresence>
               </motion.div>
 
               {/* Password */}
               <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94a3b8', marginBottom: 7, letterSpacing: '0.02em' }}>
+                <label className="auth-label">
                   Password
                 </label>
                 <div style={{ position: 'relative' }}>
                   <motion.div animate={{ color: focused === 'password' ? '#6366f1' : '#475569' }}
-                    style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+                    className="auth-input-icon">
                     <Lock size={15} />
                   </motion.div>
                   <input
@@ -311,7 +305,7 @@ export default function SignUpPage() {
                     style={{ paddingLeft: 40, paddingRight: 44 }}
                   />
                   <button type="button" onClick={() => setShowPass(s => !s)}
-                    style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#475569', cursor: 'pointer', padding: 4 }}>
+                    className="auth-pass-toggle">
                     {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
                 </div>
@@ -319,19 +313,19 @@ export default function SignUpPage() {
                 <AnimatePresence>
                   {validationErrors.password && (
                     <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                      style={{ fontSize: 11.5, color: '#f43f5e', marginTop: 5 }}>{validationErrors.password}</motion.p>
+                      className="auth-field-error">{validationErrors.password}</motion.p>
                   )}
                 </AnimatePresence>
               </motion.div>
 
               {/* Confirm Password */}
               <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.46 }}>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94a3b8', marginBottom: 7, letterSpacing: '0.02em' }}>
+                <label className="auth-label">
                   Confirm Password
                 </label>
                 <div style={{ position: 'relative' }}>
                   <motion.div animate={{ color: focused === 'confirm' ? '#6366f1' : '#475569' }}
-                    style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+                    className="auth-input-icon">
                     <Lock size={15} />
                   </motion.div>
                   <input
@@ -345,7 +339,7 @@ export default function SignUpPage() {
                     style={{ paddingLeft: 40, paddingRight: 44 }}
                   />
                   <button type="button" onClick={() => setShowConfirm(s => !s)}
-                    style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#475569', cursor: 'pointer', padding: 4 }}>
+                    className="auth-pass-toggle">
                     {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
                   {confirm && confirm === password && (
@@ -358,7 +352,7 @@ export default function SignUpPage() {
                 <AnimatePresence>
                   {validationErrors.confirm && (
                     <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                      style={{ fontSize: 11.5, color: '#f43f5e', marginTop: 5 }}>{validationErrors.confirm}</motion.p>
+                      className="auth-field-error">{validationErrors.confirm}</motion.p>
                   )}
                 </AnimatePresence>
               </motion.div>
@@ -374,16 +368,16 @@ export default function SignUpPage() {
                   style={{ width: '100%', height: 50, marginTop: 4, fontSize: 14.5 }}
                 >
                   {loading ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span className="auth-btn-content">
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ repeat: Infinity, duration: 0.75, ease: 'linear' }}
-                        style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.25)', borderTopColor: 'white', borderRadius: '50%' }}
+                        className="auth-btn-spinner"
                       />
                       Creating account...
                     </span>
                   ) : (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span className="auth-btn-content">
                       Create Account <ArrowRight size={16} />
                     </span>
                   )}
@@ -396,15 +390,10 @@ export default function SignUpPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.65 }}
-              style={{ textAlign: 'center', fontSize: 13.5, color: '#475569', marginTop: 24 }}
+              className="auth-footer-text signup-footer-text"
             >
               Already have an account?{' '}
-              <Link
-                to="/Login"
-                style={{ color: '#818cf8', fontWeight: 600, textDecoration: 'none' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#a5b4fc')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#818cf8')}
-              >
+              <Link to="/Login" className="auth-link">
                 Sign in
               </Link>
             </motion.p>

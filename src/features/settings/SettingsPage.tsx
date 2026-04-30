@@ -1,3 +1,4 @@
+import './styles/SettingsPage.css';
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,36 +22,33 @@ function SectionCard({
       transition={{ delay, duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
       style={{ padding: '26px 28px' }}
     >
-      <header style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 22 }}>
-        <div style={{
-          width: 38, height: 38, borderRadius: 10,
-          background: `${color}14`, border: `1px solid ${color}26`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
+      <header className="settings-section-header">
+        <div
+          className="settings-section-icon"
+          style={{ background: `${color}14`, border: `1px solid ${color}26` }}
+        >
           <Icon size={16} color={color} />
         </div>
         <div>
-          <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>{label}</h3>
+          <h3 className="settings-section-title">{label}</h3>
           {description && (
-            <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2, lineHeight: 1.4 }}>{description}</p>
+            <p className="settings-section-description">{description}</p>
           )}
         </div>
       </header>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>{children}</div>
+      <div className="settings-section-body">{children}</div>
     </motion.section>
   );
 }
 
 function Row({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <div className="settings-row" style={{
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 18,
-    }}>
+    <div className="settings-row">
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: 13.5, color: 'var(--text-primary)', fontWeight: 500 }}>{label}</div>
-        {hint && <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 2, lineHeight: 1.4 }}>{hint}</div>}
+        <div className="settings-row-label">{label}</div>
+        {hint && <div className="settings-row-hint">{hint}</div>}
       </div>
-      <div style={{ flexShrink: 0 }}>{children}</div>
+      <div className="settings-row-value-wrapper">{children}</div>
     </div>
   );
 }
@@ -64,22 +62,13 @@ function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
       role="switch"
       aria-checked={on}
       onClick={onClick}
-      style={{
-        width: 40, height: 22, borderRadius: 11,
-        background: on ? 'var(--accent-primary)' : 'rgba(120,120,140,0.22)',
-        border: 'none', padding: 2, cursor: 'pointer',
-        display: 'inline-flex', alignItems: 'center',
-        transition: 'background 0.18s',
-      }}
+      className="settings-toggle"
+      style={{ background: on ? 'var(--accent-primary)' : 'rgba(120,120,140,0.22)' }}
     >
       <motion.span
         animate={{ x: on ? 18 : 0 }}
         transition={{ type: 'spring', stiffness: 600, damping: 32 }}
-        style={{
-          display: 'block', width: 18, height: 18, borderRadius: '50%',
-          background: '#ffffff',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
-        }}
+        className="settings-toggle-thumb"
       />
     </button>
   );
@@ -89,10 +78,7 @@ function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
 
 function StaticValue({ value }: { value: string }) {
   return (
-    <div style={{
-      minWidth: 220, fontSize: 13, color: 'var(--text-secondary)',
-      textAlign: 'right', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-    }}>
+    <div className="settings-static-value">
       {value}
     </div>
   );
@@ -243,7 +229,7 @@ export default function SettingsPage() {
   const notificationsEnabled = useAppSelector(s => s.ui.notificationsEnabled);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, maxWidth: 720 }}>
+    <div className="settings-page">
 
       <SectionCard
         icon={User} label="Profile" color="#6366f1" delay={0}

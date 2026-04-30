@@ -1,0 +1,30 @@
+/* ── SignUpPage overrides (import LoginPage.css first) ── */
+
+/* Tighter spacing for the signup form which has more fields */
+.signup-logo {
+  margin-bottom: 36px;
+}
+
+.signup-heading {
+  margin-bottom: 28px;
+}
+
+.signup-form {
+  gap: 14px;
+}
+
+.signup-divider {
+  margin-bottom: 20px;
+}
+
+.signup-footer-text {
+  margin-top: 24px;
+}
+
+/* Confirm-password match icon */
+.signup-confirm-check {
+  position: absolute;
+  right: 38px;
+  top: 50%;
+  transform: translateY(-50%);
+}

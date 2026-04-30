@@ -1,3 +1,4 @@
+import './styles/NotificationPanel.css';
 import { motion } from 'framer-motion';
 import { X, CheckCheck, Bell, AlertCircle, CheckCircle, Info, AlertTriangle } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -23,39 +24,21 @@ function NotifItem({ notif }: { notif: Notification }) {
       initial={{ opacity: 0, x: 10 }}
       animate={{ opacity: 1, x: 0 }}
       onClick={() => dispatch(markRead(notif.id))}
-      style={{
-        display: 'flex', gap: 12, padding: '14px 16px', cursor: 'pointer',
-        background: notif.read ? 'transparent' : 'rgba(99,102,241,0.04)',
-        borderBottom: '1px solid rgba(255,255,255,0.04)',
-        transition: 'background 0.2s',
-        position: 'relative',
-      }}
+      className={`notif-item${notif.read ? '' : ' unread'}`}
     >
-      {!notif.read && (
-        <div style={{
-          position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
-          width: 3, height: '60%', background: '#6366f1', borderRadius: '0 3px 3px 0',
-        }} />
-      )}
-      <div style={{
-        width: 34, height: 34, borderRadius: 10,
-        background: cfg.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-      }}>
+      {!notif.read && <div className="notif-item-indicator" />}
+      <div className="notif-item-icon" style={{ background: cfg.bg }}>
         <Icon size={16} color={cfg.color} />
       </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
-          <span style={{ fontSize: 12.5, fontWeight: 600, color: notif.read ? '#94a3b8' : '#f1f5f9' }}>
+      <div className="notif-item-content">
+        <div className="notif-item-header-row">
+          <span className={`notif-item-title${notif.read ? ' read' : ''}`}>
             {notif.title}
           </span>
-          {!notif.read && (
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#6366f1', flexShrink: 0 }} />
-          )}
+          {!notif.read && <div className="notif-item-dot" />}
         </div>
-        <p style={{ fontSize: 12, color: '#64748b', lineHeight: 1.5 }}>{notif.message}</p>
-        <span style={{ fontSize: 11, color: '#475569', marginTop: 4, display: 'block' }}>
-          {timeAgo(notif.timestamp)}
-        </span>
+        <p className="notif-item-message">{notif.message}</p>
+        <span className="notif-item-time">{timeAgo(notif.timestamp)}</span>
       </div>
     </motion.div>
   );
@@ -87,35 +70,21 @@ export default function NotificationPanel() {
       transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
     >
       {/* Header */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '16px 16px 12px', borderBottom: '1px solid rgba(255,255,255,0.06)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div className="notif-panel-header">
+        <div className="notif-panel-header-left">
           <Bell size={16} color="#6366f1" />
-          <span style={{ fontSize: 14, fontWeight: 600, color: '#f1f5f9' }}>Notifications</span>
+          <span className="notif-panel-title">Notifications</span>
           {unread > 0 && (
-            <span style={{
-              padding: '2px 8px', borderRadius: 20, background: 'rgba(99,102,241,0.15)',
-              color: '#818cf8', fontSize: 11, fontWeight: 600,
-            }}>
-              {unread} new
-            </span>
+            <span className="notif-panel-count">{unread} new</span>
           )}
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div className="notif-panel-actions">
           {unread > 0 && (
-            <button
-              onClick={() => dispatch(markAllRead())}
-              style={{ background: 'none', border: 'none', color: '#6366f1', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
-            >
+            <button onClick={() => dispatch(markAllRead())} className="notif-mark-all-btn">
               <CheckCheck size={13} /> Mark all read
             </button>
           )}
-          <button
-            onClick={() => dispatch(closePanel())}
-            style={{ background: 'none', border: 'none', color: '#475569', cursor: 'pointer', display: 'flex' }}
-          >
+          <button onClick={() => dispatch(closePanel())} className="notif-close-btn">
             <X size={16} />
           </button>
         </div>
@@ -124,9 +93,9 @@ export default function NotificationPanel() {
       {/* List */}
       <div>
         {notifications.length === 0 ? (
-          <div style={{ padding: 40, textAlign: 'center', color: '#475569' }}>
+          <div className="notif-empty">
             <Bell size={32} style={{ marginBottom: 12, opacity: 0.3 }} />
-            <p style={{ fontSize: 13 }}>No notifications</p>
+            <p className="notif-empty-text">No notifications</p>
           </div>
         ) : (
           notifications.map(n => <NotifItem key={n.id} notif={n} />)
