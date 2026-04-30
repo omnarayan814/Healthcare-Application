@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(npx create-vite@latest . --template react-ts)",
+      "Bash(git -C \"/Users/omnarayan/Interview Project/Healthcare-Application\" status)",
+      "Bash(npm init *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "Bash(npm install *)"
+    ]
+  }
+}
